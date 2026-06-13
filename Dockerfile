@@ -57,7 +57,7 @@ ENV COMPOSER_MEMORY_LIMIT=4G
 RUN apt-get update && \
     apt-get --yes install gnupg &&\
     sh -c 'wget -q -O - https://packages.blackfire.io/gpg.key |APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn apt-key add -' &&\
-    sh -c 'echo "deb http://packages.blackfire.io/debian any main" >  /etc/apt/sources.list.d/blackfire.list' &&\
+    sh -c 'echo "deb https://packages.blackfire.io/debian any main" >  /etc/apt/sources.list.d/blackfire.list' &&\
     apt-get update && \
     apt-get --yes install \
         blackfire \
