@@ -1,0 +1,3 @@
+cld_file_storage_cleanup:
+    enable_content_addressed_storer: true
+    enable_api_media_dedup: true

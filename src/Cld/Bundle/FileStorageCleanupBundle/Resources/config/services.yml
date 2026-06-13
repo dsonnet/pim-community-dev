@@ -1,0 +1,59 @@
+services:
+    Cld\Bundle\FileStorageCleanupBundle\Service\FileKeyNormalizer: ~
+
+    Cld\Bundle\FileStorageCleanupBundle\Service\ReusableFileResolver:
+        arguments:
+            - '@database_connection'
+            - '@akeneo_file_storage.repository.file_info'
+            - '@akeneo_file_storage.file_storage.filesystem_provider'
+
+    Cld\Bundle\FileStorageCleanupBundle\Service\SurfaceProvider:
+        arguments:
+            - '@database_connection'
+
+    Cld\Bundle\FileStorageCleanupBundle\Service\ReferencedKeyIndex:
+        arguments:
+            - '@database_connection'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\FileKeyNormalizer'
+
+    Cld\Bundle\FileStorageCleanupBundle\Service\OrphanDetector:
+        arguments:
+            - '@database_connection'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\FileKeyNormalizer'
+
+    Cld\Bundle\FileStorageCleanupBundle\Service\SelfCheck:
+        arguments:
+            - '@database_connection'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\FileKeyNormalizer'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\OrphanDetector'
+
+    Cld\Bundle\FileStorageCleanupBundle\Service\OrphanPurger:
+        arguments:
+            - '@database_connection'
+            - '@akeneo_file_storage.file_storage.filesystem_provider'
+            - '%cld_file_storage_cleanup.catalog_storage_root%'
+
+    Cld\Bundle\FileStorageCleanupBundle\Command\PurgeOrphansCommand:
+        arguments:
+            - '@database_connection'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\SurfaceProvider'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\ReferencedKeyIndex'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\OrphanDetector'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\SelfCheck'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\OrphanPurger'
+        tags:
+            - { name: console.command }
+
+    Cld\Bundle\FileStorageCleanupBundle\Command\RestoreQuarantineCommand:
+        arguments:
+            - '@database_connection'
+            - '%cld_file_storage_cleanup.catalog_storage_root%'
+        tags:
+            - { name: console.command }
+
+    Cld\Bundle\FileStorageCleanupBundle\Command\DedupHardlinksCommand:
+        arguments:
+            - '@database_connection'
+            - '%cld_file_storage_cleanup.catalog_storage_root%'
+        tags:
+            - { name: console.command }

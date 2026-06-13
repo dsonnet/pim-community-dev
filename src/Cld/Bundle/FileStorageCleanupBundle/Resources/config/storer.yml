@@ -1,0 +1,8 @@
+services:
+    # Only loaded when cld_file_storage_cleanup.enable_content_addressed_storer is true.
+    Cld\Bundle\FileStorageCleanupBundle\Storer\ContentAddressedFileStorer:
+        decorates: akeneo_file_storage.file_storage.file.file_storer
+        arguments:
+            - '@Cld\Bundle\FileStorageCleanupBundle\Storer\ContentAddressedFileStorer.inner'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\ReusableFileResolver'
+            - '%cld_file_storage_cleanup.content_addressed_storages%'
