@@ -1,0 +1,5 @@
+services:
+    cld_text_collection.completeness.text_collection:
+        public: false
+        class: Cld\Bundle\TextCollectionBundle\Completeness\TextCollectionMaskItemGenerator
+        tags: [{ name: akeneo.pim.enrichment.completeness.mask_item_generator }]

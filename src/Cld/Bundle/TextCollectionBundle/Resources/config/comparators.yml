@@ -1,0 +1,7 @@
+services:
+    cld_text_collection.comparator.attribute.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\Updater\Comparator\TextCollectionComparator
+        arguments:
+            - ['pim_catalog_text_collection']
+        tags:
+            - { name: pim_catalog.attribute.comparator }

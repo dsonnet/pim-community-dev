@@ -1,0 +1,10 @@
+services:
+    cld_text_collection.provider.field.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\Provider\Field\TextCollectionProvider
+        tags:
+            - { name: pim_enrich.provider.field, priority: 100 }
+
+    cld_text_collection.provider.filter:
+        class: Cld\Bundle\TextCollectionBundle\Filter\FilterProvider
+        tags:
+            - { name: pim_enrich.provider.filter, priority: 100 }

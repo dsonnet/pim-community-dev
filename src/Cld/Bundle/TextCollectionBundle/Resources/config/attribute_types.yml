@@ -1,0 +1,7 @@
+services:
+    cld_text_collection.attribute_type.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\AttributeType\TextCollectionType
+        arguments:
+            - 'textCollection'
+        tags:
+            - { name: pim_catalog.attribute_type, alias: pim_catalog_text_collection }

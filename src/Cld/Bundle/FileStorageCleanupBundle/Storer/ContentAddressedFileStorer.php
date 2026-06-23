@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cld\Bundle\FileStorageCleanupBundle\Storer;
 
+use Akeneo\Tool\Component\FileStorage\File\FileStorer;
 use Akeneo\Tool\Component\FileStorage\File\FileStorerInterface;
 use Akeneo\Tool\Component\FileStorage\Model\FileInfoInterface;
 use Cld\Bundle\FileStorageCleanupBundle\Service\ReusableFileResolver;
@@ -23,8 +24,14 @@ use Cld\Bundle\FileStorageCleanupBundle\Service\ReusableFileResolver;
  * a new key, nothing edits bytes in place) and CE deletes media neither on product
  * removal nor value change. The companion purge command also never deletes referenced
  * files, so sharing one key across many products cannot cause a dangling reference.
+ *
+ * Extends the concrete FileStorer (rather than only implementing FileStorerInterface)
+ * so it satisfies consumers that type-hint the concrete class — e.g. Smartoys
+ * FileCollectionBundle's MediaDownloader. The parent constructor is intentionally not
+ * called: every path delegates to $this->decorated, so the parent's own collaborators
+ * are never accessed.
  */
-class ContentAddressedFileStorer implements FileStorerInterface
+class ContentAddressedFileStorer extends FileStorer
 {
     /** @param string[] $enabledStorages */
     public function __construct(

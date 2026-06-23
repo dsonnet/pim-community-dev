@@ -1,0 +1,15 @@
+mappings:
+    pim_catalog_product:
+        dynamic_templates:
+            -
+                text_collection_structure:
+                    path_match: 'values.*-textCollection.*'
+                    match_mapping_type: 'object'
+                    mapping:
+                        type: 'object'
+            -
+                text_collection:
+                    path_match: 'values.*-textCollection.*'
+                    mapping:
+                        type: 'keyword'
+                        index: 'not_analyzed'

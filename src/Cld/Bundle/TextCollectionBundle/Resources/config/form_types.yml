@@ -1,0 +1,7 @@
+services:
+    cld_text_collection.form.type.filter.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\DataGrid\Form\Type\Filter\TextCollectionFilterType
+        arguments:
+            - '@translator'
+        tags:
+            - { name: form.type, alias: cld_type_text_collection_filter }

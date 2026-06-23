@@ -1,0 +1,20 @@
+services:
+    cld_text_collection.updater.setter.text_collection:
+        public: false
+        class: Cld\Bundle\TextCollectionBundle\Updater\Setter\TextCollectionAttributeSetter
+        parent: pim_catalog.updater.setter.abstract
+        arguments:
+            - ['pim_catalog_text_collection']
+        tags:
+            - { name: 'pim_catalog.updater.setter' }
+
+    cld_text_collection.updater.copier.text_collection:
+        public: false
+        class: '%pim_catalog.updater.copier.value.class%'
+        parent: pim_catalog.updater.copier.abstract
+        arguments:
+            - '@pim_serializer'
+            - ['pim_catalog_text_collection']
+            - ['pim_catalog_text_collection']
+        tags:
+            - { name: 'pim_catalog.updater.copier' }

@@ -1,0 +1,11 @@
+services:
+    cld_text_collection.query.elasticsearch.filter.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\Elasticsearch\Filter\Attribute\TextCollectionFilter
+        arguments:
+            - '@pim_catalog.validator.helper.attribute_filter'
+            - ['pim_catalog_text_collection']
+            - ['EMPTY', 'NOT EMPTY', 'IN', 'NOT IN']
+        tags:
+            - { name: 'pim_catalog.elasticsearch.query.product_filter', priority: 30 }
+            - { name: 'pim_catalog.elasticsearch.query.product_model_filter', priority: 30 }
+            - { name: 'pim_catalog.elasticsearch.query.product_and_product_model_filter', priority: 30 }

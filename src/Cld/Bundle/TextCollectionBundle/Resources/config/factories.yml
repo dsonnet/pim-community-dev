@@ -1,0 +1,5 @@
+services:
+    cld_text_collection.factory.value.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\Factory\Value\TextCollectionValueFactory
+        tags:
+            - { name: akeneo.pim.enrichment.factory.product_value }

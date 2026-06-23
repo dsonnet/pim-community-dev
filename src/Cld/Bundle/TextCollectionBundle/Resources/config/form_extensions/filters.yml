@@ -1,0 +1,9 @@
+extensions:
+    cld-attribute-text-collection-filter:
+        module: pim/filter/attribute/string
+        config:
+            operators:
+                - EMPTY
+                - NOT EMPTY
+                - IN
+                - NOT IN

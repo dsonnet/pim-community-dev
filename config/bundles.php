@@ -60,4 +60,5 @@ return [
     Akeneo\Category\Infrastructure\Symfony\AkeneoCategoryBundle::class => ['all' => true],
     Akeneo\Pim\Automation\IdentifierGenerator\Infrastructure\Symfony\AkeneoIdentifierGeneratorBundle::class => ['all' => true],
     Cld\Bundle\FileStorageCleanupBundle\CldFileStorageCleanupBundle::class => ['all' => true],
+    Cld\Bundle\TextCollectionBundle\CldTextCollectionBundle::class => ['all' => true],
 ];

@@ -1,0 +1,15 @@
+services:
+    cld_text_collection.array_converter.standard_to_flat.product.value_converter:
+        class: Cld\Bundle\TextCollectionBundle\ArrayConverter\StandardToFlat\Product\ValueConverter\TextCollectionConverter
+        arguments:
+            - '@pim_connector.array_converter.flat_to_standard.product.attribute_columns_resolver'
+            - ['pim_catalog_text_collection']
+        tags:
+            - { name: 'pim_connector.array_converter.standard_to_flat.product.value_converter' }
+
+    cld_text_collection.array_converter.flat_to_standard.product.value_converter:
+        class: Cld\Bundle\TextCollectionBundle\ArrayConverter\FlatToStandard\Product\ValueConverter\TextCollectionConverter
+        arguments:
+            - ['pim_catalog_text_collection']
+        tags:
+            - { name: 'pim_connector.array_converter.flat_to_standard.product.value_converter' }

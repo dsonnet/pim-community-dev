@@ -1,0 +1,23 @@
+<div class="AknFieldContainer-inputContainer text-collection-field">
+    <ul class="AknList text-collection-list">
+        <% _.each(items, function (item, index) { %>
+        <li class="AknList-item text-collection-item">
+            <input type="text"
+                   class="AknTextField AknTextField--light text-collection-item-input"
+                   value="<%- item %>"
+                   data-index="<%- index %>"
+                   <%- editMode === 'view' ? 'readonly' : '' %> />
+            <% if (editMode !== 'view') { %>
+            <button type="button"
+                    class="AknIconButton AknIconButton--small AknIconButton--trash text-collection-item-remove"
+                    data-index="<%- index %>"></button>
+            <% } %>
+        </li>
+        <% }); %>
+    </ul>
+    <% if (editMode !== 'view') { %>
+    <button type="button" class="AknButton AknButton--small text-collection-add-btn">
+        +
+    </button>
+    <% } %>
+</div>

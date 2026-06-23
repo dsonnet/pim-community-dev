@@ -1,0 +1,15 @@
+config:
+    paths:
+        cldtextcollection/text-collection-field: cldtextcollection/js/product/field/text-collection-field
+        cldtextcollection/templates/product/field/text-collection: cldtextcollection/templates/product/field/text-collection.html
+        cldtextcollection/templates/datagrid/cell/text-collection: cldtextcollection/templates/datagrid/cell/text_collection.html
+        oro/datagrid/pim_catalog_text_collection-cell: cldtextcollection/js/datagrid/cell/text_collection_cell
+    config:
+        pim/form/common/attributes/create-button:
+            attribute_icons:
+                pim_catalog_text_collection: list
+        pim/attribute-edit-form/type-specific-form-registry:
+            formNames:
+                pim_catalog_text_collection:
+                    create: pim-attribute-form-text
+                    edit:   pim-attribute-form-text

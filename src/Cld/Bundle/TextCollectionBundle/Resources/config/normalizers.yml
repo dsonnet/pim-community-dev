@@ -1,0 +1,7 @@
+services:
+    cld_text_collection.normalizer.indexing.value.text_collection:
+        class: Cld\Bundle\TextCollectionBundle\Normalizer\Indexing\Value\TextCollectionNormalizer
+        arguments:
+            - '@akeneo.pim.structure.query.get_attributes'
+        tags:
+            - { name: pim_indexing_serializer.normalizer, priority: 90 }

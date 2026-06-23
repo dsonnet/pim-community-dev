@@ -1,0 +1,8 @@
+services:
+    cld_text_collection.datagrid.text_collection_filter:
+        class: Cld\Bundle\TextCollectionBundle\Filter\ProductValue\TextCollectionFilter
+        arguments:
+            - '@form.factory'
+            - '@pim_filter.product_utility'
+        tags:
+            - { name: oro_filter.extension.orm_filter.filter, type: product_value_text_collection }

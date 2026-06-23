@@ -1,0 +1,3 @@
+parameters:
+    pim_catalog_text_collection.attribute_icons:
+        pim_catalog_text_collection: list

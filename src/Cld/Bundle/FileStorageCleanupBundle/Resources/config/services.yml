@@ -57,3 +57,12 @@ services:
             - '%cld_file_storage_cleanup.catalog_storage_root%'
         tags:
             - { name: console.command }
+
+    Cld\Bundle\FileStorageCleanupBundle\Command\MediaSnapshotCommand:
+        arguments:
+            - '@database_connection'
+            - '@akeneo_file_storage.file_storage.filesystem_provider'
+            - '@Cld\Bundle\FileStorageCleanupBundle\Service\FileKeyNormalizer'
+            - '%cld_file_storage_cleanup.catalog_storage_root%'
+        tags:
+            - { name: console.command }
