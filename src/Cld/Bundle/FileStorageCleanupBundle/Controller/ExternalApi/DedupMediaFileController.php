@@ -21,12 +21,16 @@ use Symfony\Component\Routing\Router;
  * Drop-in replacement for the external API media-files controller
  * (POST /api/rest/v1/media-files) that makes re-uploading identical images idempotent:
  *
- * 1. If the uploaded bytes (hash + size + original filename) match an already
- *    registered file AND the target product/product model value already points at that
- *    key, the request becomes a complete no-op: no new file, no file_info row, no
- *    product update, no save, no reindex. 201 + Location of the existing key.
- * 2. If the bytes match an existing file but the value points elsewhere, the existing
- *    key is reused (no new physical copy) and only the product value is updated.
+ * 1. If the value already in place references a byte-identical file that is still on
+ *    disk (same hash + size + original filename, regardless of which key holds those
+ *    bytes), the request is a complete no-op: no new file, no file_info row, no product
+ *    update, no save, no reindex, no new history version. 201 + Location of that key.
+ *    Matching on content rather than key string is essential: pre-dedup, the same image
+ *    was stored under a fresh key per upload, so the value's key rarely equals the
+ *    canonical reuse key — a key comparison would re-link (and churn) an already-correct
+ *    value, orphaning its current key.
+ * 2. If the bytes match an existing file but the value does NOT already hold them, the
+ *    existing key is reused (no new physical copy) and only the product value is updated.
  * 3. Otherwise the stock behavior runs unchanged.
  *
  * In case 2 the stock failure path would be harmful: the parent controller removes the
@@ -59,15 +63,18 @@ class DedupMediaFileController extends MediaFileController
             );
         }
 
+        $current = $this->currentValueFileInfo($product, $productInfos);
+        if (null !== $current && $this->valueAlreadyHolds($current, $request->files)) {
+            // Byte-identical to the value already in place: change nothing at all.
+            return $this->createdResponse($current);
+        }
+
         $reused = $this->resolveReusableUpload($request->files);
         if (null === $reused) {
             return parent::createProductMedia($request);
         }
 
-        if ($this->currentValueKey($product, $productInfos) !== $reused->getKey()) {
-            $this->linkReusedFile(fn () => $this->linkFileToProduct($reused, $product, $productInfos));
-        }
-        // else: byte-identical to the value already in place — skip update and save entirely
+        $this->linkReusedFile(fn () => $this->linkFileToProduct($reused, $product, $productInfos));
 
         return $this->createdResponse($reused);
     }
@@ -82,14 +89,17 @@ class DedupMediaFileController extends MediaFileController
             );
         }
 
+        $current = $this->currentValueFileInfo($productModel, $productModelInfos);
+        if (null !== $current && $this->valueAlreadyHolds($current, $request->files)) {
+            return $this->createdResponse($current);
+        }
+
         $reused = $this->resolveReusableUpload($request->files);
         if (null === $reused) {
             return parent::createProductModelMedia($request);
         }
 
-        if ($this->currentValueKey($productModel, $productModelInfos) !== $reused->getKey()) {
-            $this->linkReusedFile(fn () => $this->linkFileToProductModel($reused, $productModel, $productModelInfos));
-        }
+        $this->linkReusedFile(fn () => $this->linkFileToProductModel($reused, $productModel, $productModelInfos));
 
         return $this->createdResponse($reused);
     }
@@ -117,21 +127,35 @@ class DedupMediaFileController extends MediaFileController
     }
 
     /**
+     * The FileInfo a media value currently holds, or null if the value is empty or the
+     * attribute/locale/scope is wrong (in which case we don't short-circuit and let the
+     * stock updater produce the canonical error).
+     *
      * @param array{attribute: string, locale: ?string, scope: ?string} $infos
      */
-    private function currentValueKey(EntityWithValuesInterface $entity, array $infos): ?string
+    private function currentValueFileInfo(EntityWithValuesInterface $entity, array $infos): ?FileInfoInterface
     {
         try {
             $value = $entity->getValue($infos['attribute'], $infos['locale'], $infos['scope']);
         } catch (\Exception $e) {
-            // Unknown attribute, wrong locale/scope...: let the stock updater produce
-            // the canonical error by not short-circuiting.
             return null;
         }
 
         $data = null === $value ? null : $value->getData();
 
-        return $data instanceof FileInfoInterface ? $data->getKey() : null;
+        return $data instanceof FileInfoInterface ? $data : null;
+    }
+
+    /**
+     * Whether the value already in place is a byte-identical, still-on-disk copy of the
+     * uploaded file — the signal that the re-upload must leave the attribute untouched.
+     */
+    private function valueAlreadyHolds(FileInfoInterface $current, FileBag $files): bool
+    {
+        $upload = $files->has('file') ? $files->get('file') : null;
+
+        return $upload instanceof \SplFileInfo
+            && $this->reusableFileResolver->matchesExisting($current, $upload);
     }
 
     /**
