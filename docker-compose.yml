@@ -1,5 +1,8 @@
 services:
   php:
+    build:
+      context: '.'
+      target: 'dev'
     image: 'akeneo/pim-php-dev:8.3'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
@@ -21,6 +24,9 @@ services:
       - 'pim'
 
   fpm:
+    build:
+      context: '.'
+      target: 'dev'
     image: 'akeneo/pim-php-dev:8.3'
     environment:
       APP_ENV: '${APP_ENV:-prod}'
