@@ -19,6 +19,16 @@ include make-file/*.mk
 include components/*/Makefile
 
 ##
+## Docker image
+##
+# Builds the local PHP image used by docker-compose (php and fpm services).
+# The build fails if the installed PHP is older than PHP_MIN_VERSION
+# (see Dockerfile), which guards against PHP2Shell (CVE-2026-109618/109619).
+.PHONY: php-image-dev
+php-image-dev:
+	docker build --pull --target dev -t akeneo/pim-php-dev:8.3 .
+
+##
 ## Front
 ##
 .PHONY: node_modules
